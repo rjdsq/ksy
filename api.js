@@ -15,7 +15,7 @@ const apiConfig = {
         baseUrl: 'https://api.github.com/repos/rjdsq/ksx/contents/',
         path: 'img/yunnan/',
         headers: {
-            Authorization: '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'
+            Authorization: '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'
         }
     },
     // 轮播图专用图片API地址（需令牌访问）
@@ -23,7 +23,7 @@ const apiConfig = {
         baseUrl: 'https://api.github.com/repos/rjdsq/ksx/contents/',
         path: 'img/lunbo/', // 轮播图专用图片路径
         headers: {
-            Authorization: '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'
+            Authorization: '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'
         }
     },
     // 全局域名替换规则（若API域名被墙时使用，正常情况可忽略）
