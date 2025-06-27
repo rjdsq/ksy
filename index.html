@@ -12,6 +12,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
+                
                 <span class="nav-title">❄️</span>
             </div>
             <button class="hamburger" aria-label="菜单">
@@ -44,54 +45,33 @@
         </div>
 
         <div class="tabs">
-            <button class="tab-button active" data-tab="text1">随笔</button>
-            <button class="tab-button" data-tab="text2">诗词</button>
-            <button class="tab-button" data-tab="text3">故事</button>
-            <button class="tab-button" data-tab="message">相册</button>
+            <button class="tab-button active" onclick="showTab('text1')">随笔</button>
+            <button class="tab-button" onclick="showTab('text2')">诗词</button>
+            <button class="tab-button" onclick="showTab('text3')">故事</button>
+            <button class="tab-button" onclick="showTab('message')">相册</button>
         </div>
 
         <div id="text1" class="tab-content active">
-            <h2>随笔</h2>
-            <p class="content">加载中...</p>
+            <h2>内容1</h2>
+            <p>这是第一个选项卡的内容...</p>
         </div>
 
         <div id="text2" class="tab-content">
-            <h2>诗词</h2>
-            <p class="content">加载中...</p>
+            <h2>内容2</h2>
+            <p>这是第二个选项卡的内容...</p>
         </div>
 
         <div id="text3" class="tab-content">
-            <h2>故事</h2>
-            <p class="content">加载中...</p>
+            <h2>内容3</h2>
+            <p>这是第三个选项卡的内容...</p>
         </div>
 
-        <div id="message" class="tab-content"></div>
-
-        <script src="js/tab-loader.js"></script>
-        <script src="js/carousel.js"></script>
-        <script src="js/tab-switcher.js"></script>
-        <script>
-            // 初始化代码
-            document.addEventListener('DOMContentLoaded', function() {
-                // 初始化选项卡切换功能
-                setupTabSwitching();
-                
-                // 初始化内容加载
-                const tabs = {
-                    'text1': 'text/选项卡1.txt',
-                    'text2': 'text/选项卡2.txt', 
-                    'text3': 'text/选项卡3.txt'
-                };
-                for (const [id, file] of Object.entries(tabs)) {
-                    loadTabContent(id, file);
-                }
-            });
-        </script>
+        <div id="message"></div>
     </div>
 
     <!-- 音乐播放器 -->
     <audio id="music-player" loop>
-        <source src="music/赞美愚者.mp3" type="audio/mpeg">
+        <source src="https://j.1lin.dpdns.org/https://raw.githubusercontent.com/rjdsq/rjdsq.github.io/main/mp3/赞美愚者.mp3" type="audio/mpeg">
         您的浏览器不支持音频元素。
     </audio>
     
@@ -131,10 +111,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+        // 选项卡切换功能
+        function showTab(tabId) {
+            // 隐藏所有标签内容和图片区域
+            document.querySelectorAll('.tab-content, #message').forEach(element => {
+                element.classList.remove('active');
+            });
+            
+            // 取消所有按钮的活动状态
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // 显示选中的内容
+            document.getElementById(tabId).classList.add('active');
+            
+            // 设置对应按钮的活动状态
+            document.querySelector(`button[onclick="showTab('${tabId}')"]`).classList.add('active');
+        }
+
         // 页面加载完成后执行
         document.addEventListener('DOMContentLoaded', function() {
             // 默认显示第一个选项卡
-            document.querySelector('.tab-button').click();
+            showTab('text1');
 
             // 音乐播放控制
             const musicPlayer = document.getElementById('music-player');
@@ -171,5 +170,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     </script>
+<script src="https://raw.githubusercontent.com/rjdsq/rjdsq.github.io/main/file/樱花1.js"></script>
+    
+    
 </body>
 </html>

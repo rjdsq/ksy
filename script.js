@@ -7,7 +7,7 @@ function processText(text) {
         .replace(/\n/g, '<br>');
 }
 
-// 加载文本内容
+// 加载文本内容（无需修改，文本文件无需令牌）
 function loadTextContents() {
     apiConfig.textFiles.files.forEach(({ id, path }) => {
         const element = document.getElementById(id);
@@ -15,67 +15,59 @@ function loadTextContents() {
         
         element.innerHTML = "正在加载...";
         
-       fetch(`text/${path}`)
-        
-        
-
-
+        fetch(`${apiConfig.textFiles.baseUrl}${apiConfig.textFiles.path}${path}`)
             .then(response => response.ok ? response.text() : Promise.reject('文件获取失败'))
             .then(text => { element.innerHTML = processText(text); })
             .catch(error => { element.innerHTML = `加载错误，触发限制`; });
     });
 }
 
-// 加载图片内容
+// 加载图片内容（修改此处：使用fetchWithToken）
 function loadImageContents() {
     const message = document.getElementById('message');
     if (!message) return;
-
     message.innerHTML = "正在加载图片...";
-
-    // 模拟异步加载
-    setTimeout(() => {
-        message.innerHTML = '';
-        
-        // 列出img/yunnan目录下的所有图片文件
-        const imageFiles = [
-            '云南大理 洱海.jpg',
-            '云南大理 洱海美景.jpg',
-            '云南大理 苍山.jpg',
-            '云南大理 草海.jpg',
-            '云南大理 草海标志.jpg',
-            '云南天池 海鸥群.jpg',
-            '云南昆明 天空之镜.jpg',
-            '云南昆明 落叶树.jpg',
-            '云南洱海 海鸥特写 .jpg',
-            '云南洱海.jpg',
-            '阚双雪 大理草海.jpg',
-            '阚双雪 遵义约拍.jpg'
-        ];
-        
-        imageFiles.forEach(filename => {
-            const imgContainer = document.createElement('div');
-            imgContainer.className = 'image-container';
+    
+    // 核心修改：使用封装的fetchWithToken并传递headers
+    fetchWithToken(`${apiConfig.images.baseUrl}${apiConfig.images.path}`, apiConfig.images.headers)
+        .then(response => response.json())
+        .then(data => {
+            message.innerHTML = '';
+            // 核心修改：逆序排列数组（从新到旧）
+            const reversedData = data.reverse();
             
-            const img = document.createElement('img');
-            img.src = `img/yunnan/${filename}`;
-            img.alt = filename;
-            img.loading = 'lazy';
-            img.className = 'landscape-image';
+            reversedData.forEach(item => {
+                if (item.type === 'file' && /\.(jpg|jpeg|png|gif|svg)$/i.test(item.name)) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'image-container';
+                    
+                    const img = document.createElement('img');
+                    const kkgithubUrl = apiConfig.domainReplace.reduce((currentUrl, rule) => {
+                        return currentUrl.replace(rule.from, rule.to);
+                    }, item.download_url);
+                    img.src = kkgithubUrl;
+                    img.alt = item.name;
+                    img.loading = 'lazy';
+                    img.className = 'landscape-image';
+                    
+                    const fileName = document.createElement('div');
+                    fileName.className = 'wjm subtitle';
+                    fileName.textContent = item.name.replace(/\.\w+$/, '');
+                    
+                    imgContainer.appendChild(img);
+                    imgContainer.appendChild(fileName);
+                    message.appendChild(imgContainer);
+                }
+            });
             
-            const fileName = document.createElement('div');
-            fileName.className = 'wjm subtitle';
-            fileName.textContent = filename.replace(/\.\w+$/, '');
-            
-            imgContainer.appendChild(img);
-            imgContainer.appendChild(fileName);
-            message.appendChild(imgContainer);
+            if (message.children.length === 0) {
+                message.innerHTML = '<p>没有找到图片</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching images:', error);
+            message.innerHTML = '<p>无法加载图片，请稍后再试。</p>';
         });
-        
-        if (message.children.length === 0) {
-            message.innerHTML = '<p>没有找到图片</p>';
-        }
-    }, 500);
 }
 
 // 轮播图控制
@@ -261,31 +253,34 @@ function resetSlideShow() {
     startSlideShow();
 }
 
-// 获取本地图片用于轮播图
+// 从GitHub获取图片轮播图（修改此处：使用fetchWithToken）
 async function fetchImages() {
-    // 列出img/yunnan目录下的所有图片文件
-    const imageFiles = [
-        '云南大理 洱海.jpg',
-        '云南大理 洱海美景.jpg',
-        '云南大理 苍山.jpg',
-        '云南大理 草海.jpg',
-        '云南大理 草海标志.jpg',
-        '云南天池 海鸥群.jpg',
-        '云南昆明 天空之镜.jpg',
-        '云南昆明 落叶树.jpg',
-        '云南洱海 海鸥特写 .jpg',
-        '云南洱海.jpg',
-        '阚双雪 大理草海.jpg',
-        '阚双雪 遵义约拍.jpg'
-    ];
-    
-    // 转换为轮播图需要的格式
-    return imageFiles
-        .map(filename => ({
-            url: `img/yunnan/${filename}`,
-            name: filename.replace(/\.\w+$/, '')
-        }))
-        .slice(0, apiConfig.carousel.maxSlides); // 使用配置中的最大显示张数
+    try {
+        // 核心修改：使用fetchWithToken并传递carouselImages的headers
+        const response = await fetchWithToken(
+            `${apiConfig.carouselImages.baseUrl}${apiConfig.carouselImages.path}`,
+            apiConfig.carouselImages.headers
+        );
+        
+        if (!response.ok) {
+            throw new Error('轮播图图片加载失败');
+        }
+        const data = await response.json();
+        
+        // 将GitHub API返回的数据转换为轮播图需要的格式
+        return data.reverse()
+            .filter(item => item.type === 'file' && /\.(jpg|jpeg|png|gif|svg)$/i.test(item.name))
+            .map(item => ({
+                url: apiConfig.domainReplace.reduce((currentUrl, rule) => {
+                    return currentUrl.replace(rule.from, rule.to);
+                }, item.download_url),
+                name: item.name.replace(/\.\w+$/, '')
+            }))
+            .slice(0, apiConfig.carousel.maxSlides); // 使用配置中的最大显示张数
+    } catch (error) {
+        console.error('获取轮播图图片失败:', error);
+        return [];
+    }
 }
 
 // 页面加载完成后初始化所有功能
