@@ -2,7 +2,7 @@
 const apiConfig = {
     // 文本文件API地址（直接使用raw.githubusercontent.com，无需令牌）
     textFiles: {
-        baseUrl: 'https://raw.githubusercontent.com/rjdsq/rjdsq.github.io/main/',
+        baseUrl: 'https://raw.githubusercontent.com/rjdsq/ksx/main/',
         path: 'text/',
         files: [
             { id: 'text1', path: '选项卡1.txt' },
@@ -15,7 +15,7 @@ const apiConfig = {
         baseUrl: 'https://api.github.com/repos/rjdsq/ksx/contents/',
         path: 'img/yunnan/',
         headers: {
-            Authorization: 'token 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'
+            Authorization: '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'
         }
     },
     // 轮播图专用图片API地址（需令牌访问）
@@ -23,7 +23,7 @@ const apiConfig = {
         baseUrl: 'https://api.github.com/repos/rjdsq/ksx/contents/',
         path: 'img/lunbo/', // 轮播图专用图片路径
         headers: {
-            Authorization: 'token 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'
+            Authorization: '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'
         }
     },
     // 全局域名替换规则（若API域名被墙时使用，正常情况可忽略）
