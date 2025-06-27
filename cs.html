@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云南图片展示</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #f8b195;
+            --bg-color: #f9f9f9;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+        
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .search-input {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            width: 300px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+        }
+        
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .image-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .image-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .image-container {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .image-card:hover .image-container img {
+            transform: scale(1.05);
+        }
+        
+        .image-info {
+            padding: 15px;
+        }
+        
+        .image-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .image-meta {
+            font-size: 0.9rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+        }
+        
+        .image-meta i {
+            margin-right: 5px;
+            color: var(--secondary-color);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 30px 0;
+            color: #e74c3c;
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .image-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>云南风景图片展示</h1>
+            <p>浏览美丽的云南风光照片</p>
+        </header>
+        
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="搜索图片...">
+        </div>
+        
+        <div class="image-grid" id="imageGrid">
+            <div class="loading">正在加载图片...请稍候</div>
+        </div>
+    </div>
+
+    <script>
+        // GitHub访问令牌
+        const githubToken = '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';
+        // 图片目录API地址
+        const apiUrl = 'https://api.github.com/repos/rjdsq/ksx/contents/img/yunnan/';
+        
+        // 获取图片数据
+        fetch(apiUrl, {
+            headers: {
+                'Authorization': `token ${githubToken}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP错误! 状态码: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(images => {
+            const imageGrid = document.getElementById('imageGrid');
+            imageGrid.innerHTML = '';
+            
+            if (images.length === 0) {
+                imageGrid.innerHTML = '<div class="error">该目录下没有找到图片</div>';
+                return;
+            }
+            
+            // 过滤出图片文件
+            const imageFiles = images.filter(item => {
+                const lowerName = item.name.toLowerCase();
+                return lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') || 
+                       lowerName.endsWith('.png') || lowerName.endsWith('.gif');
+            });
+            
+            if (imageFiles.length === 0) {
+                imageGrid.innerHTML = '<div class="error">该目录下没有找到图片文件</div>';
+                return;
+            }
+            
+            // 生成图片卡片
+            imageFiles.forEach(image => {
+                const imageCard = document.createElement('div');
+                imageCard.className = 'image-card';
+                
+                // 构建图片原始URL
+                const imageUrl = `https://raw.githubusercontent.com/rjdsq/ksx/main/img/yunnan/${encodeURIComponent(image.name)}`;
+                
+                imageCard.innerHTML = `
+                    <div class="image-container">
+                        <img src="${imageUrl}" alt="${image.name}">
+                    </div>
+                    <div class="image-info">
+                        <div class="image-title">${image.name}</div>
+                        <div class="image-meta">
+                            <i class="far fa-file-image"></i>
+                            <span>${(image.size / 1024).toFixed(2)} KB</span>
+                        </div>
+                    </div>
+                `;
+                
+                imageGrid.appendChild(imageCard);
+            });
+        })
+        .catch(error => {
+            const imageGrid = document.getElementById('imageGrid');
+            imageGrid.innerHTML = `<div class="error">加载图片失败: ${error.message}</div>`;
+            console.error('错误:', error);
+        });
+        
+        // 搜索功能
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const imageCards = document.querySelectorAll('.image-card');
+            
+            imageCards.forEach(card => {
+                const title = card.querySelector('.image-title').textContent.toLowerCase();
+                if (title.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
