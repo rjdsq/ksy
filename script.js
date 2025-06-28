@@ -8,25 +8,25 @@ function processText(text) {
 }
 
 // 加载文本内容（无需修改，文本文件无需令牌）
-function loadTextContents() {
+function loadTextContents() {      
     apiConfig.textFiles.files.forEach(({ id, path }) => {
         const element = document.getElementById(id);
         if (!element) return;
         
-        element.innerHTML = "正在加载...";
+       
         
         fetch(`${apiConfig.textFiles.baseUrl}${apiConfig.textFiles.path}${path}`)
             .then(response => response.ok ? response.text() : Promise.reject('文件获取失败'))
             .then(text => { element.innerHTML = processText(text); })
-            .catch(error => { element.innerHTML = `加载错误，触发限制`; });
+            .catch(error => { element.innerHTML = `网络异常或加载错误.....`; });
     });
 }
 
-// 加载图片内容（修改此处：使用fetchWithToken）
+// 加载图片内容
 function loadImageContents() {
     const message = document.getElementById('message');
     if (!message) return;
-    message.innerHTML = "正在加载图片...";
+   
     
     // 核心修改：使用封装的fetchWithToken并传递headers
     fetchWithToken(`${apiConfig.images.baseUrl}${apiConfig.images.path}`, apiConfig.images.headers)
@@ -46,7 +46,7 @@ function loadImageContents() {
                         return currentUrl.replace(rule.from, rule.to);
                     }, item.download_url);
                     img.src = kkgithubUrl;
-                    img.alt = item.name;
+                    img.alt = item.name.replace(/\.\w+$/, '');
                     img.loading = 'lazy';
                     img.className = 'landscape-image';
                     
@@ -75,6 +75,89 @@ let currentSlide = 0;
 let slideInterval;
 let slideDelay = 5000; // 默认值5秒
 
+// 创建轮播图幻灯片元素
+function createSlideElement(image, index) {
+    const slide = document.createElement('div');
+    slide.className = 'carousel-slide';
+    
+    const img = document.createElement('img');
+    img.alt = image.name.replace(/\.\w+$/, '');
+    
+    // 添加加载错误处理
+    img.onerror = function() {
+        this.classList.add('error');
+        console.error(`图片加载失败: ${image.url}`);
+    };
+    
+    // 添加加载完成处理
+    img.onload = function() {
+        this.classList.remove('error');
+    };
+    
+    // 设置图片源
+    img.src = image.url;
+    
+    // 添加标题
+    if (image.name) {
+        const caption = document.createElement('div');
+        caption.className = 'carousel-caption';
+        caption.textContent = image.name;
+        slide.appendChild(caption);
+    }
+    
+    slide.appendChild(img);
+    return slide;
+}
+
+// 创建轮播图指示点元素
+function createDotElement(index) {
+    const dot = document.createElement('div');
+    dot.className = 'carousel-dot';
+    if (index === 0) dot.classList.add('active');
+    dot.addEventListener('click', () => goToSlide(index));
+    return dot;
+}
+
+// 设置轮播图事件监听器
+function setupCarouselEventListeners() {
+    const carouselContainer = document.querySelector('.carousel');
+    
+    // 鼠标悬停控制
+    if (carouselContainer) {
+        carouselContainer.addEventListener('mouseenter', () => {
+            console.log('鼠标进入，暂停轮播');
+            stopSlideShow();
+        });
+        
+        carouselContainer.addEventListener('mouseleave', () => {
+            console.log('鼠标离开，恢复轮播');
+            startSlideShow();
+        });
+    }
+    
+    // 按钮控制（可选）
+    const prevButton = document.querySelector('.carousel-prev, .carousel-button.prev, .prev-button');
+    const nextButton = document.querySelector('.carousel-next, .carousel-button.next, .next-button');
+    
+    if (prevButton) {
+        prevButton.addEventListener('click', () => {
+            console.log('上一张按钮点击');
+            prevSlide();
+        });
+    } else {
+        console.warn('上一张按钮未找到，自动轮播仍可工作');
+    }
+    
+    if (nextButton) {
+        nextButton.addEventListener('click', () => {
+            console.log('下一张按钮点击');
+            nextSlide();
+        });
+    } else {
+        console.warn('下一张按钮未找到，自动轮播仍可工作');
+    }
+}
+
 // 初始化轮播图
 function initCarousel(images) {
     console.log('初始化轮播图，图片数量:', images.length);
@@ -101,89 +184,18 @@ function initCarousel(images) {
     
     // 添加图片到轮播图
     images.forEach((image, index) => {
-        // 创建轮播图片
-        const slide = document.createElement('div');
-        slide.className = 'carousel-slide';
-        
-        const img = document.createElement('img');
-        // 先不设置src，显示加载中状态
-        img.alt = `轮播图片 ${index + 1}`;
-        
-        // 添加加载错误处理
-        img.onerror = function() {
-            this.classList.add('error');
-            console.error(`图片加载失败: ${image.url}`);
-        };
-        
-        // 添加加载完成处理
-        img.onload = function() {
-            this.classList.remove('error');
-        };
-        
-        // 设置图片源
-        img.src = image.url;
-        
-        // 添加标题
-        if (image.name) {
-            const caption = document.createElement('div');
-            caption.className = 'carousel-caption';
-            caption.textContent = image.name;
-            slide.appendChild(caption);
-        }
-        
-        slide.appendChild(img);
+        const slide = createSlideElement(image, index);
         slidesContainer.appendChild(slide);
         
-        // 创建指示点
-        const dot = document.createElement('div');
-        dot.className = 'carousel-dot';
-        if (index === 0) dot.classList.add('active');
-        dot.addEventListener('click', () => goToSlide(index));
+        const dot = createDotElement(index);
         dotsContainer.appendChild(dot);
     });
     
     // 设置初始状态
     updateCarousel();
     
-    // 添加轮播控制功能
-    const carouselContainer = document.querySelector('.carousel');
-    
-    // 鼠标悬停控制
-    if (carouselContainer) {
-        carouselContainer.addEventListener('mouseenter', () => {
-            console.log('鼠标进入，暂停轮播');
-            stopSlideShow();
-        });
-        
-        carouselContainer.addEventListener('mouseleave', () => {
-            console.log('鼠标离开，恢复轮播');
-            startSlideShow();
-        });
-    }
-    
-    // 按钮控制（可选）
-    const prevButton = document.querySelector('.carousel-prev, .carousel-button.prev, .prev-button');
-    const nextButton = document.querySelector('.carousel-next, .carousel-button.next, .next-button');
-    
-    if (prevButton) {
-        prevButton.addEventListener('click', () => {
-            console.log('上一张按钮点击');
-            prevSlide();
-            resetSlideShow();
-        });
-    } else {
-        console.warn('上一张按钮未找到，自动轮播仍可工作');
-    }
-    
-    if (nextButton) {
-        nextButton.addEventListener('click', () => {
-            console.log('下一张按钮点击');
-            nextSlide();
-            resetSlideShow();
-        });
-    } else {
-        console.warn('下一张按钮未找到，自动轮播仍可工作');
-    }
+    // 设置事件监听器
+    setupCarouselEventListeners();
     
     // 启动自动轮播
     startSlideShow();
@@ -204,53 +216,82 @@ function updateCarousel() {
     });
 }
 
-// 下一张幻灯片
+// 统一的幻灯片切换函数
+function changeSlide(newIndex) {
+    const slides = document.querySelectorAll('.carousel-slide');
+    if (slides.length === 0) return;
+    
+    if (typeof newIndex === 'number') {
+        // 直接跳转到指定索引
+        currentSlide = newIndex;
+    } else if (newIndex === 'next') {
+        // 下一张
+        currentSlide = (currentSlide + 1) % slides.length;
+    } else if (newIndex === 'prev') {
+        // 上一张
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+    }
+    
+    updateCarousel();
+    resetSlideShow();
+}
+
+// 下一张幻灯片 - 简化为调用统一函数
 function nextSlide() {
-    const slides = document.querySelectorAll('.carousel-slide');
-    currentSlide = (currentSlide + 1) % slides.length;
-    updateCarousel();
-    resetSlideShow();
+    changeSlide('next');
 }
 
-// 上一张幻灯片
+// 上一张幻灯片 - 简化为调用统一函数
 function prevSlide() {
-    const slides = document.querySelectorAll('.carousel-slide');
-    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-    updateCarousel();
-    resetSlideShow();
+    changeSlide('prev');
 }
 
-// 跳转到指定幻灯片
+// 跳转到指定幻灯片 - 简化为调用统一函数
 function goToSlide(index) {
-    currentSlide = index;
-    updateCarousel();
-    resetSlideShow();
+    changeSlide(index);
 }
 
-// 开始自动轮播
-function startSlideShow() {
-    console.log('启动轮播，间隔:', slideDelay);
-    stopSlideShow();
-    slideInterval = setInterval(() => {
-        console.log('自动切换到下一张');
-        nextSlide();
-    }, slideDelay);
-}
-
-// 停止自动轮播
-function stopSlideShow() {
-    if (slideInterval) {
-        console.log('停止轮播');
-        clearInterval(slideInterval);
-        slideInterval = null;
+// 统一的轮播控制函数
+function controlSlideShow(action) {
+    switch(action) {
+        case 'start':
+            if (!slideInterval) {
+                console.log('启动轮播，间隔:', slideDelay);
+                slideInterval = setInterval(() => {
+                    nextSlide();
+                }, slideDelay);
+            }
+            break;
+            
+        case 'stop':
+            if (slideInterval) {
+                console.log('停止轮播');
+                clearInterval(slideInterval);
+                slideInterval = null;
+            }
+            break;
+            
+        case 'reset':
+            console.log('重置轮播计时器');
+            controlSlideShow('stop');
+            controlSlideShow('start');
+            break;
     }
 }
 
-// 重置自动轮播计时器
+// 开始自动轮播 - 简化为调用统一函数
+function startSlideShow() {
+    controlSlideShow('start');
+}
+
+// 停止自动轮播 - 简化为调用统一函数
+function stopSlideShow() {
+    controlSlideShow('stop');
+}
+
+// 重置自动轮播计时器 - 简化为调用统一函数
 function resetSlideShow() {
-    console.log('重置轮播计时器');
-    stopSlideShow();
-    startSlideShow();
+    controlSlideShow('reset');
 }
 
 // 从GitHub获取图片轮播图（修改此处：使用fetchWithToken）
