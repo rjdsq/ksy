@@ -208,7 +208,7 @@ body {
     .hamburger-inner::after {
         width: 24px;
         height: 1px;
-        background-color: #50bb7d;
+        background:linear-gradient(to right, #3498db, #2ecc71);
         border-radius: 3px;
         position: absolute;
         transition: transform 0.2s ease;
@@ -252,6 +252,7 @@ body {
         display: flex;
         transform: translateY(0);
         opacity: 1;
+        animation: fadeInUp 0.3s ease forwards;
     }
     
     .nav-link {
@@ -291,13 +292,13 @@ body {
 /* 轮播图样式 */
 .carousel-container {
     position: relative;
-    width: 90%;
+    width: 98%;
     margin: 0 auto;
     height: 400px;
     margin-bottom: 30px;
     overflow: hidden;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+   box-shadow: 2px 2px 16px rgb(63 85 133 / 53%);
 }
 
 .carousel-wrapper {
@@ -339,6 +340,7 @@ body {
     font-size: 0.9rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     z-index: 2;
+    box-shadow: 3px 4px 18px rgb(222 221 225 / 89%);
 }
 
 
@@ -411,7 +413,7 @@ body {
 
 @media (max-width: 480px) {
     .carousel-container {
-        height: 164px;
+        height: 194px;
     }
     
     .carousel-button {
@@ -511,6 +513,7 @@ body {
     transform: translateY(0);
     opacity: 1;
     animation: fadeInUp 0.5s ease forwards;
+    padding: 12px;
 }
 
 @keyframes fadeInUp {
@@ -549,7 +552,7 @@ body {
 }
 
 .tab-content p {
-    color: #555;
+    color:#144238;
     line-height: 1.8;
     margin-bottom: 15px;
     font-size: 1rem;
@@ -570,8 +573,7 @@ body {
 .tab-content img {
     max-width: 100%;
     height: auto;
-    border-radius: 8px;
-    margin: 15px 0;
+    margin: 0 0;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
@@ -596,14 +598,14 @@ body {
 #message {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    gap: 25px;
     padding: 0px 0;
     margin:  0 auto;
     border-radius: 5px;
     width:94% ;
     margin-bottom: 30px;
     display: none;
-    margin-top: 15px;
+    margin-top: 30px;
 }
 
 #message.active {
@@ -612,8 +614,8 @@ body {
 
 .image-container {
     background-color:rgb(49 90 169 / 3%);
-    padding: 0px 0px;
-    border-radius: 15px;
+    padding: 0px;
+    border-radius: 0px;
     box-shadow: 4px 5px 10px rgb(178 195 185 / 70%);
 }
 
@@ -678,14 +680,14 @@ body {
     }
     
     .tab-content h2 {
-        font-size: 1.3rem;
+        font-size: 1.1rem;
     }
 }
 
 /* 页面整体美化 */
 .main-content {
     max-width: 1000px;
-    margin: 90px auto 30px auto; /* 调整上边距适应新导航栏 */
+    margin: 70px auto 30px auto; /* 调整上边距适应新导航栏 */
     padding: 30px 0px;
   /*  background-color: rgba(255, 255, 255, 0.95);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);*/
@@ -751,7 +753,7 @@ body {
 /* 响应式调整 */
 @media (max-width: 768px) {
     .main-content {
-            margin: 80px auto 15px auto; /* 在小屏幕上保持足够的上边距 */
+            margin: 58px auto 15px auto; /* 在小屏幕上保持足够的上边距 */
             padding: 20px 15px;
         }
     
