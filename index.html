@@ -826,6 +826,7 @@ body {
 .music-button.playing {
     animation: pulse 2s infinite;
     background: linear-gradient(to right, #2ecc71, #3498db);
+    
 }
 
 /* 添加图标字体 */
@@ -846,6 +847,99 @@ body {
 .icon-pause {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M6 19h4V5H6v14zm8-14v14h4V5h-4z'/%3E%3C/svg%3E");
 }
+
+
+    
+    .loader-container {
+        position: relative; /* 改为相对定位 */
+        width: 100%; /* 宽度100% */
+        height: 100%; /* 高度100% */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10; 
+        transition: opacity 0.5s ease;
+    }
+    
+
+    
+    /* 现代化加载动画主体 */
+    .modern-loader {
+        position: relative;
+        width: 120px;
+        height: 120px;
+    }
+    
+    /* 中心圆 */
+    .modern-loader::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #6e8efb, #a777e3);
+        border-radius: 50%;
+        animation: pulse 1.5s ease-in-out infinite;
+        box-shadow: 0 0 20px rgba(107, 142, 251, 0.5);
+    }
+    
+    /* 粒子效果 */
+    .particle {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        background: linear-gradient(135deg, #6e8efb, #a777e3);
+        border-radius: 50%;
+        animation: particle-animation 2s ease-in-out infinite;
+    }
+    
+    /* 8个粒子位置 */
+    .particle:nth-child(1) { top: 10%; left: 50%; animation-delay: 0s; }
+    .particle:nth-child(2) { top: 25%; left: 85%; animation-delay: 0.2s; }
+    .particle:nth-child(3) { top: 60%; left: 90%; animation-delay: 0.4s; }
+    .particle:nth-child(4) { top: 85%; left: 50%; animation-delay: 0.6s; }
+    .particle:nth-child(5) { top: 60%; left: 10%; animation-delay: 0.8s; }
+    .particle:nth-child(6) { top: 25%; left: 15%; animation-delay: 1s; }
+    .particle:nth-child(7) { top: 10%; left: 50%; animation-delay: 1.2s; }
+    .particle:nth-child(8) { top: 40%; left: 85%; animation-delay: 1.4s; }
+    
+    /* 加载文字 */
+    .loader-text {
+        position: absolute;
+        margin-top: 140px;
+        color: #555;
+        font-size: 16px;
+        letter-spacing: 2px;
+        font-weight: 500;
+    }
+    
+    /* 脉冲动画 */
+    @keyframes pulse {
+        0% { transform: translate(-50%, -50%) scale(1); }
+        50% { transform: translate(-50%, -50%) scale(1.1); }
+        100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    
+    /* 粒子动画 */
+    @keyframes particle-animation {
+        0% { 
+            transform: scale(0.8) translate(0, 0); 
+            opacity: 0.5;
+        }
+        50% { 
+            transform: scale(1.2) translate(20px, -20px); 
+            opacity: 1;
+        }
+        100% { 
+            transform: scale(0.8) translate(0, 0); 
+            opacity: 0.5;
+        }
+    }
+    
+
+
 </style>
  <!-- https://fonts.zeoseven.com/ -->
 </head>
@@ -870,13 +964,30 @@ body {
             </div>
         </div>
     </nav>
+    
+    
 
     <div class="main-content">
+    
         <!-- 轮播图 -->
         <div class="carousel-container">
+        <div class="loader-container" id="loaderContainer">
+    <div class="modern-loader">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    <div class="loader-text">系统加载中...</div>
+</div>
             <div class="carousel-wrapper">
+                
                 <div class="carousel-slides">
-
+                
                 </div>
             </div>
             <button class="carousel-button prev" aria-label="上一张">&lt;</button>
@@ -924,95 +1035,55 @@ body {
     <button id="music-button" class="music-button" title="播放/暂停音乐">
         <span class="icon icon-play"></span>
     </button>
-  
-
     
-     <script> 
- // API地址配置
-const apiConfig = {
-    // 文本文件API地址（豆包改这里）
-    textFiles: {
-        baseUrl: 'https://goppx.com/https://raw.githubusercontent.com/rjdsq/ksx/main/',
-        path: 'text/',
-        files: [
-            { id: 'text1', path: '选项卡1.txt' },
-            { id: 'text2', path: '选项卡2.txt' },
-            { id: 'text3', path: '选项卡3.txt' }
-        ]
-    },
-    // 通用图片API地址（令牌访问）
-    images: {
-        baseUrl: 'https://api.github.com/repos/rjdsq/ksx/contents/',      // 选项卡4 GitHub API路径
-        path: 'img/yunnan/',    // 图片路径      
-        headers: {
-            // GitHub令牌
-            Authorization: 'c2a780a272316010dc3cd2b07acea4b8ae143f7e0ec93443bb626756dc0d6306ba6f2acda75c24ec3ada09ce52d9ae994819a1b61651f5347e1fbe546d6126b9'    // GitHub令牌
-        }
-    },
-    // 轮播图专用图片API地址（令牌访问）
-    carouselImages: {
-        baseUrl: 'https://api.github.com/repos/rjdsq/ksx/contents/',// 轮播图 GitHub API路径
-        path: 'img/lunbo/', // 轮播图专用图片路径
-        headers: {
-            Authorization: 'c2a780a272316010dc3cd2b07acea4b8ae143f7e0ec93443bb626756dc0d6306ba6f2acda75c24ec3ada09ce52d9ae994819a1b61651f5347e1fbe546d6126b9' // GitHub令牌
-        }
-    },
-    // 全局域名替换规则（若API域名被墙时使用，正常情况可忽略）
-    domainReplace: [
-        {
-            from: 'https://raw.githubusercontent.com', // 此处为资源API域名
-            to: 'https://goppx.com/https://raw.github.com'// 替换为可用的资源API域名
-        },
-        {
-            from: '', // 此处为API域名
-            to: ''  // 替换为可用的API域名
-            
-        }
-    ],
-    // 轮播图配置
-    carousel: {
-        slideDelay: 5000, // 轮播切换延迟(毫秒)
-        maxSlides: 3      // 最大显示张数
-    }
-};
-
-// 封装带令牌的API请求函数
-function fetchWithToken(url, headers = {}) {
-    // 合并全局令牌 headers 和自定义 headers
-    const requestHeaders = {
-        ...(apiConfig.images.headers || {}),
-        ...headers,
-        'Accept': 'application/vnd.github.v3+json' // 指定GitHub API版本
-    };
     
-    return fetch(url, {
-        method: 'GET',
-        headers: requestHeaders
+<script>
+    // 加载动画
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!window.loaderAnimated) {
+            window.loaderAnimated = true;
+            window.addEventListener('load', function() {
+                clearTimeout(window.loaderTimeout);
+                hideLoader();
+            });
+            window.loaderTimeout = setTimeout(function() {
+                hideLoader();
+            }, 5000); // 最多等待5秒
+        }
     });
-}
+    
+    // 隐藏加载动画的函数
+    function hideLoader() {
+        var loaderContainer = document.getElementById('loaderContainer');
+        var carouselContainer = document.querySelector('.carousel-container');
+        
+        if (loaderContainer && carouselContainer) {
+            loaderContainer.style.opacity = '0';
+            setTimeout(function() {
+                if (loaderContainer) {
+                    loaderContainer.style.display = 'none';
+                }
+                // 显示轮播图
+                if (carouselContainer) {
+                    carouselContainer.style.opacity = '1';
+                }
+            }, 500);
+        }
+    }
+</script>
 
 
-
-
-
-
-
-
-
-        // 移动端菜单交互逻辑
+<script>
 document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
     
     if (hamburger && navMenu) {
         hamburger.addEventListener('click', function() {
-            // 切换菜单显示状态
             navMenu.classList.toggle('active');
-            // 切换汉堡菜单动画
             this.classList.toggle('active');
         });
         
-        // 点击菜单外部关闭菜单
         document.addEventListener('click', function(event) {
             if (!navMenu.contains(event.target) && 
                 !hamburger.contains(event.target) && 
@@ -1023,410 +1094,287 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-        // 选项卡切换功能
-        function showTab(tabId) {
-            // 隐藏所有标签内容和图片区域
-            document.querySelectorAll('.tab-content, #message').forEach(element => {
-                element.classList.remove('active');
-            });
-            
-            // 取消所有按钮的活动状态
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            
-            // 显示选中的内容
-            document.getElementById(tabId).classList.add('active');
-            
-            // 设置对应按钮的活动状态
-            document.querySelector(`button[onclick="showTab('${tabId}')"]`).classList.add('active');
-        }
-
-        // 页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', function() {
-            // 默认显示第一个选项卡
-            showTab('text1');
-
-            // 音乐播放控制
-            const musicPlayer = document.getElementById('music-player');
-            const musicButton = document.getElementById('music-button');
-            const musicIcon = musicButton.querySelector('.icon');
-            
-            // 设置音乐循环播放
-            musicPlayer.loop = true;
-            
-            musicButton.addEventListener('click', function() {
-                if (musicPlayer.paused) {
-                    // 播放音乐
-                    musicPlayer.play().then(() => {
-                        musicIcon.classList.remove('icon-play');
-                        musicIcon.classList.add('icon-pause');
-                        musicButton.classList.add('playing');
-                    }).catch(error => {
-                        console.error('播放失败:', error);
-                    });
-                } else {
-                    // 暂停音乐
-                    musicPlayer.pause();
-                    musicIcon.classList.remove('icon-pause');
-                    musicIcon.classList.add('icon-play');
-                    musicButton.classList.remove('playing');
-                }
-            });
-
-            // 音乐结束时重置按钮状态
-            musicPlayer.addEventListener('ended', function() {
-                musicIcon.classList.remove('icon-pause');
-                musicIcon.classList.add('icon-play');
-                musicButton.classList.remove('playing');
-            });
-        });
+function showTab(tabId) {
+    document.querySelectorAll('.tab-content, #message').forEach(element => {
+        element.classList.remove('active');
+    });
     
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+    });
     
+    document.getElementById(tabId).classList.add('active');
     
-    
-  // 文本处理函数 - 将换行符转换为<br>
-function processText(text) {
-    return text
-        // 统一所有换行符为\n
-        .replace(/\r\n|\r|\u2028|\u2029/g, '\n')
-        // 将换行符转换为<br>
-        .replace(/\n/g, '<br>');
+    document.querySelector(`button[onclick="showTab('${tabId}')"]`).classList.add('active');
 }
+document.addEventListener('DOMContentLoaded', function() {
+    showTab('text1');
+    const musicPlayer = document.getElementById('music-player');
+    const musicButton = document.getElementById('music-button');
+    const musicIcon = musicButton.querySelector('.icon');
+    
+    musicPlayer.loop = true;
+    
+    musicButton.addEventListener('click', function() {
+        if (musicPlayer.paused) {
+            musicPlayer.play().then(() => {
+                musicIcon.classList.remove('icon-play');
+                musicIcon.classList.add('icon-pause');
+                musicButton.classList.add('playing');
+            }).catch(error => {
+                console.error('播放失败:', error);
+            });
+        } else {
+            musicPlayer.pause();
+            musicIcon.classList.remove('icon-pause');
+            musicIcon.classList.add('icon-play');
+            musicButton.classList.remove('playing');
+        }
+    });
+    musicPlayer.addEventListener('ended', function() {
+        musicIcon.classList.remove('icon-pause');
+        musicIcon.classList.add('icon-play');
+        musicButton.classList.remove('playing');
+    });
+});
+</script>
+<script>
+//相册
 
-// 加载文本内容（无需修改，文本文件无需令牌）
-function loadTextContents() {      
-    apiConfig.textFiles.files.forEach(({ id, path }) => {
-        const element = document.getElementById(id);
-        if (!element) return;
-        
-       
-        
-        fetch(`${apiConfig.textFiles.baseUrl}${apiConfig.textFiles.path}${path}`)
-            .then(response => response.ok ? response.text() : Promise.reject('文件获取失败'))
-            .then(text => { element.innerHTML = processText(text); })
-            .catch(error => { element.innerHTML = `网络异常或加载错误.....`; });
+
+const imageConfig = {
+    baseUrl: 'https://api.github.com/repos/rjdsq/ksx/contents/',
+    imagePath: 'img/yunnan/',
+    token: '\u0067\u0068\u0070\u005f\u0048\u0031\u0058\u0036\u0062\u0055\u006e\u004f\u0046\u0033\u0071\u005a\u0047\u007a\u0036\u0047\u0053\u0074\u006e\u0043\u0057\u0045\u004c\u0049\u0074\u0072\u005a\u0054\u0034\u0063\u0030\u0041\u0036\u0051\u0067\u0076'
+};
+function fetchWithToken(url) {
+    return fetch(url, {
+        headers: {
+            Authorization: `token ${imageConfig.token}`,
+            'Accept': 'application/vnd.github.v3+json'
+        }
     });
 }
-
-// 加载图片内容
-function loadImageContents() {
-    const message = document.getElementById('message');
-    if (!message) return;
-   
-    
-    // 核心修改：使用封装的fetchWithToken并传递headers
-    fetchWithToken(`${apiConfig.images.baseUrl}${apiConfig.images.path}`, apiConfig.images.headers)
-        .then(response => response.json())
-        .then(data => {
-            message.innerHTML = '';
-            // 核心修改：逆序排列数组（从新到旧）
-            const reversedData = data.reverse();
-            
-            reversedData.forEach(item => {
-                if (item.type === 'file' && /\.(jpg|jpeg|png|gif|svg)$/i.test(item.name)) {
-                    const imgContainer = document.createElement('div');
-                    imgContainer.className = 'image-container';
-                    
-                    const img = document.createElement('img');
-                    const kkgithubUrl = apiConfig.domainReplace.reduce((currentUrl, rule) => {
-                        return currentUrl.replace(rule.from, rule.to);
-                    }, item.download_url);
-                    img.src = kkgithubUrl;
-                    img.alt = item.name.replace(/\.\w+$/, '');
-                    img.loading = 'lazy';
-                    img.className = 'landscape-image';
-                    
-                    const fileName = document.createElement('div');
-                    fileName.className = 'wjm subtitle';
-                    fileName.textContent = item.name.replace(/\.\w+$/, '');
-                    
-                    imgContainer.appendChild(img);
-                    imgContainer.appendChild(fileName);
-                    message.appendChild(imgContainer);
-                }
-            });
-            
-            if (message.children.length === 0) {
-                message.innerHTML = '<p>没有找到图片</p>';
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching images:', error);
-            message.innerHTML = '<p>无法加载图片，请稍后再试。</p>';
-        });
-}
-
-// 轮播图控制
-let currentSlide = 0;
-let slideInterval;
-let slideDelay = 5000; // 默认值5秒
-
-// 创建轮播图幻灯片元素
-function createSlideElement(image, index) {
-    const slide = document.createElement('div');
-    slide.className = 'carousel-slide';
-    
-    const img = document.createElement('img');
-    img.alt = image.name.replace(/\.\w+$/, '');
-    
-    // 添加加载错误处理
-    img.onerror = function() {
-        this.classList.add('error');
-        console.error(`图片加载失败: ${image.url}`);
-    };
-    
-    // 添加加载完成处理
-    img.onload = function() {
-        this.classList.remove('error');
-    };
-    
-    // 设置图片源
-    img.src = image.url;
-    
-    // 添加标题
-    if (image.name) {
-        const caption = document.createElement('div');
-        caption.className = 'carousel-caption';
-        caption.textContent = image.name;
-        slide.appendChild(caption);
-    }
-    
-    slide.appendChild(img);
-    return slide;
-}
-
-// 创建轮播图指示点元素
-function createDotElement(index) {
-    const dot = document.createElement('div');
-    dot.className = 'carousel-dot';
-    if (index === 0) dot.classList.add('active');
-    dot.addEventListener('click', () => goToSlide(index));
-    return dot;
-}
-
-// 设置轮播图事件监听器
-function setupCarouselEventListeners() {
-    const carouselContainer = document.querySelector('.carousel');
-    
-    // 鼠标悬停控制
-    if (carouselContainer) {
-        carouselContainer.addEventListener('mouseenter', () => {
-            console.log('鼠标进入，暂停轮播');
-            stopSlideShow();
-        });
-        
-        carouselContainer.addEventListener('mouseleave', () => {
-            console.log('鼠标离开，恢复轮播');
-            startSlideShow();
-        });
-    }
-    
-    // 按钮控制（可选）
-    const prevButton = document.querySelector('.carousel-prev, .carousel-button.prev, .prev-button');
-    const nextButton = document.querySelector('.carousel-next, .carousel-button.next, .next-button');
-    
-    if (prevButton) {
-        prevButton.addEventListener('click', () => {
-            console.log('上一张按钮点击');
-            prevSlide();
-        });
-    } else {
-        console.warn('上一张按钮未找到，自动轮播仍可工作');
-    }
-    
-    if (nextButton) {
-        nextButton.addEventListener('click', () => {
-            console.log('下一张按钮点击');
-            nextSlide();
-        });
-    } else {
-        console.warn('下一张按钮未找到，自动轮播仍可工作');
-    }
-}
-
-// 初始化轮播图
-function initCarousel(images) {
-    console.log('初始化轮播图，图片数量:', images.length);
-    if (!apiConfig.carousel) {
-        console.warn('缺少轮播图配置，使用默认值');
-        apiConfig.carousel = {
-            slideDelay: 5000,
-            maxSlides: 5
-        };
-    }
-    slideDelay = apiConfig.carousel.slideDelay || 5000;
-    
-    const slidesContainer = document.querySelector('.carousel-slides');
-    const dotsContainer = document.querySelector('.carousel-dots');
-    
-    if (!slidesContainer || !dotsContainer) {
-        console.error('轮播图容器元素未找到');
+function loadImageGallery(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) {
+        console.error('图片容器元素不存在');
         return;
     }
     
-    // 清空现有内容
-    slidesContainer.innerHTML = '';
-    dotsContainer.innerHTML = '';
+    container.innerHTML = '<p class="loading">正在加载图片...</p>';
     
-    // 添加图片到轮播图
-    images.forEach((image, index) => {
-        const slide = createSlideElement(image, index);
-        slidesContainer.appendChild(slide);
-        
-        const dot = createDotElement(index);
-        dotsContainer.appendChild(dot);
-    });
-    
-    // 设置初始状态
-    updateCarousel();
-    
-    // 设置事件监听器
-    setupCarouselEventListeners();
-    
-    // 启动自动轮播
-    startSlideShow();
+    fetchWithToken(`${imageConfig.baseUrl}${imageConfig.imagePath}`)
+        .then(response => {
+            if (!response.ok) throw new Error(`API请求失败: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            container.innerHTML = '';
+            const imageFiles = data.filter(item => 
+                item.type === 'file' && /\.(jpg|jpeg|png|gif|svg)$/i.test(item.name)
+            );
+            
+            if (imageFiles.length === 0) {
+                container.innerHTML = '<p class="empty">没有找到图片</p>';
+                return;
+            }
+            
+            imageFiles.reverse().forEach(item => {
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'image-container';
+                
+                const img = document.createElement('img');
+                img.src = 'https://goppx.com/' + item.download_url;
+                img.alt = item.name.replace(/\.\w+$/, '');
+                img.loading = 'lazy';
+                img.className = 'landscape-image';
+                
+                const subtitle = document.createElement('div');
+                subtitle.className = 'subtitle';
+                subtitle.textContent = item.name.replace(/\.\w+$/, '');
+                
+                imgContainer.appendChild(img);
+                imgContainer.appendChild(subtitle);
+                container.appendChild(imgContainer);
+            });
+        })
+        .catch(error => {
+            console.error('图片加载错误:', error);
+            container.innerHTML = '<p class="error">无法加载图片，请检查网络连接或令牌有效性</p>';
+        });
 }
-
-// 更新轮播图显示
-function updateCarousel() {
-    const slides = document.querySelector('.carousel-slides');
-    slides.style.transform = `translateX(-${currentSlide * 100}%)`;
-    
-    // 更新指示点
-    document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
-        if (index === currentSlide) {
-            dot.classList.add('active');
-        } else {
-            dot.classList.remove('active');
+document.addEventListener('DOMContentLoaded', () => {
+    loadImageGallery('message');
+});
+</script>
+<script>
+//轮播
+const carouselConfig = {
+    baseUrl: 'https://api.github.com/repos/rjdsq/ksx/contents/',
+    carouselPath: 'img/lunbo/',
+    token: '\u0067\u0068\u0070\u005f\u0048\u0031\u0058\u0036\u0062\u0055\u006e\u004f\u0046\u0033\u0071\u005a\u0047\u007a\u0036\u0047\u0053\u0074\u006e\u0043\u0057\u0045\u004c\u0049\u0074\u0072\u005a\u0054\u0034\u0063\u0030\u0041\u0036\u0051\u0067\u0076'
+};
+function fetchWithToken(url) {
+    return fetch(url, {
+        headers: {
+            Authorization: `token ${carouselConfig.token}`,
+            'Accept': 'application/vnd.github.v3+json'
         }
     });
 }
-
-// 统一的幻灯片切换函数
-function changeSlide(newIndex) {
-    const slides = document.querySelectorAll('.carousel-slide');
-    if (slides.length === 0) return;
+function initCarousel() {
+    const slidesContainer = document.querySelector('.carousel-slides');
+    const dotsContainer = document.querySelector('.carousel-dots');
+    const prevButton = document.querySelector('.carousel-button.prev');
+    const nextButton = document.querySelector('.carousel-button.next');
     
-    if (typeof newIndex === 'number') {
-        // 直接跳转到指定索引
-        currentSlide = newIndex;
-    } else if (newIndex === 'next') {
-        // 下一张
-        currentSlide = (currentSlide + 1) % slides.length;
-    } else if (newIndex === 'prev') {
-        // 上一张
-        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-    }
+    if (!slidesContainer || !dotsContainer) return;
     
+    
+    
+    fetchWithToken(`${carouselConfig.baseUrl}${carouselConfig.carouselPath}`)
+        .then(response => {
+            if (!response.ok) throw new Error(`轮播图API请求失败: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            slidesContainer.innerHTML = '';
+            dotsContainer.innerHTML = '';
+            
+            const carouselImages = data
+                .filter(item => item.type === 'file' && /\.(jpg|jpeg|png|gif)$/i.test(item.name))
+                .reverse()
+                .slice(0, 5);
+            
+            if (carouselImages.length === 0) {
+                slidesContainer.innerHTML = '<p class="empty">没有找到轮播图图片</p>';
+                return;
+            }
+            
+            carouselImages.forEach((imgItem, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                
+                const img = document.createElement('img');
+                img.src = 'https://goppx.com/' + imgItem.download_url;
+                img.alt = imgItem.name.replace(/\.\w+$/, '');
+                img.className = 'carousel-slide-img';
+                img.loading = 'lazy';
+                
+                const caption = document.createElement('div');
+                caption.className = 'carousel-caption';
+                caption.textContent = imgItem.name.replace(/\.\w+$/, '');
+                
+                slide.appendChild(img);
+                slide.appendChild(caption);
+                slidesContainer.appendChild(slide);
+                
+                const dot = document.createElement('div');
+                dot.className = `carousel-dot${index === 0 ? ' active' : ''}`;
+                dot.addEventListener('click', () => goToSlide(index));
+                dotsContainer.appendChild(dot);
+            });
+            
+            currentSlide = 0;
+            updateCarousel();
+            startSlideShow();
+            
+            if (prevButton) prevButton.addEventListener('click', prevSlide);
+            if (nextButton) nextButton.addEventListener('click', nextSlide);
+        })
+        .catch(error => {
+            console.error('轮播图加载错误:', error);
+            slidesContainer.innerHTML = '<p class="error">无法加载轮播图，请检查网络连接</p>';
+        });
+}
+let currentSlide = 0;
+let slideInterval;
+const slideDelay = 5000;
+function updateCarousel() {
+    const slides = document.querySelector('.carousel-slides');
+    if (!slides) return;
+    
+    slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+    
+    document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+    });
+}
+function goToSlide(index) {
+    currentSlide = index;
     updateCarousel();
     resetSlideShow();
 }
-
-// 下一张幻灯片 - 简化为调用统一函数
 function nextSlide() {
-    changeSlide('next');
+    currentSlide = (currentSlide + 1) % document.querySelectorAll('.carousel-slide').length;
+    updateCarousel();
+    resetSlideShow();
 }
-
-// 上一张幻灯片 - 简化为调用统一函数
 function prevSlide() {
-    changeSlide('prev');
+    currentSlide = (currentSlide - 1 + document.querySelectorAll('.carousel-slide').length) % document.querySelectorAll('.carousel-slide').length;
+    updateCarousel();
+    resetSlideShow();
 }
-
-// 跳转到指定幻灯片 - 简化为调用统一函数
-function goToSlide(index) {
-    changeSlide(index);
-}
-
-// 统一的轮播控制函数
-function controlSlideShow(action) {
-    switch(action) {
-        case 'start':
-            if (!slideInterval) {
-                console.log('启动轮播，间隔:', slideDelay);
-                slideInterval = setInterval(() => {
-                    nextSlide();
-                }, slideDelay);
-            }
-            break;
-            
-        case 'stop':
-            if (slideInterval) {
-                console.log('停止轮播');
-                clearInterval(slideInterval);
-                slideInterval = null;
-            }
-            break;
-            
-        case 'reset':
-            console.log('重置轮播计时器');
-            controlSlideShow('stop');
-            controlSlideShow('start');
-            break;
-    }
-}
-
-// 开始自动轮播 - 简化为调用统一函数
 function startSlideShow() {
-    controlSlideShow('start');
+    if (slideInterval) clearInterval(slideInterval);
+    slideInterval = setInterval(nextSlide, slideDelay);
 }
-
-// 停止自动轮播 - 简化为调用统一函数
 function stopSlideShow() {
-    controlSlideShow('stop');
+    if (slideInterval) clearInterval(slideInterval);
 }
-
-// 重置自动轮播计时器 - 简化为调用统一函数
 function resetSlideShow() {
-    controlSlideShow('reset');
+    stopSlideShow();
+    startSlideShow();
 }
-
-// 从GitHub获取图片轮播图（修改此处：使用fetchWithToken）
-async function fetchImages() {
-    try {
-        // 核心修改：使用fetchWithToken并传递carouselImages的headers
-        const response = await fetchWithToken(
-            `${apiConfig.carouselImages.baseUrl}${apiConfig.carouselImages.path}`,
-            apiConfig.carouselImages.headers
-        );
-        
-        if (!response.ok) {
-            throw new Error('轮播图图片加载失败');
-        }
-        const data = await response.json();
-        
-        // 将GitHub API返回的数据转换为轮播图需要的格式
-        return data.reverse()
-            .filter(item => item.type === 'file' && /\.(jpg|jpeg|png|gif|svg)$/i.test(item.name))
-            .map(item => ({
-                url: apiConfig.domainReplace.reduce((currentUrl, rule) => {
-                    return currentUrl.replace(rule.from, rule.to);
-                }, item.download_url),
-                name: item.name.replace(/\.\w+$/, '')
-            }))
-            .slice(0, apiConfig.carousel.maxSlides); // 使用配置中的最大显示张数
-    } catch (error) {
-        console.error('获取轮播图图片失败:', error);
-        return [];
-    }
-}
-
-// 页面加载完成后初始化所有功能
-document.addEventListener('DOMContentLoaded', async () => {
-    // 加载文本内容
-    loadTextContents();
+document.addEventListener('DOMContentLoaded', () => {
+    initCarousel();
     
-    // 加载图片内容
-    loadImageContents();
-    
-    // 初始化轮播图
-    const images = await fetchImages();
-    if (images.length > 0) {
-        initCarousel(images);
+    const carouselContainer = document.querySelector('.carousel-container');
+    if (carouselContainer) {
+        carouselContainer.addEventListener('mouseenter', stopSlideShow);
+        carouselContainer.addEventListener('mouseleave', startSlideShow);
     }
 });
-  </script>
- 
+</script>
+<script>
+const textFileUrls = {
+    'text1': 'https://goppx.com/https://raw.githubusercontent.com/rjdsq/ksx/main/text/选项卡1.txt',
+    'text2': 'https://goppx.com/https://raw.githubusercontent.com/rjdsq/ksx/main/text/选项卡2.txt',
+    'text3': 'https://goppx.com/https://raw.githubusercontent.com/rjdsq/ksx/main/text/选项卡3.txt'
+};
+function loadText(elementId, fileKey) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    element.innerHTML = '<p class="loading">正在加载内容...</p>';
+    
+    const url = textFileUrls[fileKey];
+    if (!url) {
+        element.innerHTML = `<p class="error">文件路径不存在</p>`;
+        return;
+    }
+    
+    fetch(url)
+        .then(response => {
+            if (!response.ok) throw new Error(`请求失败: ${response.status}`);
+            return response.text();
+        })
+        .then(text => {
+            const htmlContent = text.replace(/\n/g, '<br>');
+            element.innerHTML = htmlContent;
+        })
+        .catch(error => {
+            element.innerHTML = `<p class="error">加载失败: ${error.message}</p>`;
+            console.error('文本加载错误:', error);
+        });
+}
+document.addEventListener('DOMContentLoaded', () => {
+    loadText('text1', 'text1');
+    loadText('text2', 'text2');
+    loadText('text3', 'text3');
+});
+</script>
+
 </body>
 </html>
