@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>阚双雪 | 时光的礼物 - 致最爱的你</title>
+    <meta name="description" content="写给阚双雪的深情告白，记录我们共同的回忆、成长与情感历程，传递真挚爱意与思念">
+    <meta name="keywords" content="阚双雪, 时光礼物, 情感告白, 爱情回忆, 思念, 告白信, 爱情故事">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./xue.css">
+    <!-- 引入Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+
+
+    
+</head>
+<style>
+
+:root {
+    /* 主题颜色系统 
+     * primary: 主要强调色，用于重要元素
+     * secondary: 次要强调色，用于辅助元素
+     * accent: 点缀色，用于特殊强调
+     * text: 文本颜色
+     * light: 浅色背景
+     * decor: 装饰色
+     */
+    --primary: #ff9bb3;
+    --secondary: #f8c6d0;
+    --accent: #ffc7d2;
+    --text: #5d4037;
+    --light: #fff9f5;
+    --decor: #ffebee;
+    --shadow-color: rgba(255, 155, 179, 0.2);
+    --border-color: rgba(255, 155, 179, 0.15);
+    
+    /* 全局效果定义
+     * transition-normal: 统一的过渡效果
+     * box-shadow-*: 三个层级的阴影效果，用于不同层级的元素
+     */
+    --transition-normal: all 0.3s ease;
+    --box-shadow-normal: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --box-shadow-medium: 0 10px 30px var(--shadow-color);
+    --box-shadow-large: 0 25px 50px var(--shadow-color);
+}
+
+/* 基础样式重置
+ * 移除默认边距和内边距，统一盒模型计算方式
+ * 确保所有元素使用相同的盒模型计算方式，避免布局问题
+ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 页面基础布局和背景效果
+ * 1. 使用渐变背景创建柔和的视觉效果
+ * 2. 通过animation实现背景渐变动画
+ * 3. 采用flex布局使内容垂直水平居中
+ * 4. 设置最小高度确保页面填充整个视口
+ */
+body {
+    /* 渐变背景设置 */
+    background: linear-gradient(135deg, var(--light), var(--decor));
+    background-size: 400% 400%; /* 扩大背景尺寸以实现动画效果 */
+    animation: gradientBG 15s ease infinite; /* 应用背景动画 */
+    
+    /* 文本样式 */
+    color: var(--text);
+    line-height: 1.8;
+    font-family: 'Noto Serif SC', serif;
+    
+    /* 布局设置 */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    overflow-x: hidden; /* 防止水平滚动 */
+}
+
+/* 背景渐变动画
+ * 通过改变背景位置实现柔和的渐变动画效果
+ * 使用三个关键帧创建循环动画
+ */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }    /* 起始位置 */
+    50% { background-position: 100% 50%; }  /* 中间位置 */
+    100% { background-position: 0% 50%; }   /* 结束位置（回到起点） */
+}
+
+
+/* 主容器样式 */
+/* 主容器样式
+ * 用于包裹页面主要内容的容器
+ * 1. 限制最大宽度确保在大屏幕上的可读性
+ * 2. 使用半透明背景营造磨砂玻璃效果
+ * 3. 添加圆角和阴影提升视觉层次
+ */
+.container {
+    max-width: 1200px;          /* 限制最大宽度 */
+    width: 92%;                 /* 响应式宽度 */
+    background: rgba(255, 255, 255, 0.85);  /* 半透明背景 */
+    border-radius: 30px;        /* 大圆角创造柔和外观 */
+    box-shadow: var(--box-shadow-large);    /* 大阴影增加深度 */
+    overflow: hidden;           /* 防止内容溢出 */
+    display: flex;              /* 使用弹性布局 */
+    flex-direction: column;     /* 垂直排列子元素 */
+    position: relative;         /* 为内部定位提供参考 */
+    border: 1px solid rgba(255, 255, 255, 0.7); /* 添加微妙边框 */
+}
+
+
+/* 图片容器样式
+ * 用于包装和定位图片元素
+ * 1. 设置相对定位便于内部元素绝对定位
+ * 2. 添加合适的边距和间距
+ */
+.image-container {
+  position: relative;
+  display: inline-block;
+  margin-left: 4%;    /* 左侧边距 */
+  margin-right: 4%;   /* 右侧边距 */
+  margin-bottom: 20px; /* 底部间距，增加与下一张图片的距离 */
+}
+
+/* 图片文件名样式 - 一行一张布局 */
+.wjm.subtitle {
+  position: absolute;
+  bottom: -12px;      /* 减小与图片的距离 */
+  left: 0;            /* 对齐图片左边缘 */
+  right: 0;           /* 扩展到右边缘 */
+  color: var(--text); /* 使用主题文本颜色 */
+  padding: 2px 0;     /* 上下内边距 */
+  font-size: 0.9rem;  /* 增大字体大小，一行一张时可以更明显 */
+  max-width: 100%;    /* 允许文本占据整个容器宽度 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center; /* 文本居中 */
+  background: none;   /* 移除背景色 */
+  margin: 0;          /* 移除可能的外边距 */
+  font-family: inherit; /* 使用继承的字体 */
+  letter-spacing: 0.2px; /* 轻微增加字母间距，提高可读性 */
+  line-height: 1.2;   /* 增加行高 */
+  opacity: 0.9;       /* 增加不透明度 */
+  font-weight: 500;   /* 稍微加粗 */
+}
+
+/* 图片悬停时文件名样式变化 */
+.image-container:hover .wjm.subtitle {
+  opacity: 1;         /* 悬停时完全不透明 */
+  color: var(--primary); /* 使用主题主色 */
+  transition: all 0.3s ease; /* 平滑过渡 */
+}
+
+/* 在移动设备上调整文件名样式 */
+@media (max-width: 768px) {
+  .wjm.subtitle {
+    font-size: 0.85rem; /* 在移动设备上减小字体大小 */
+    bottom: -10px;      /* 在移动设备上减小与图片的距离 */
+  }
+}
+
+/* 图片容器和图片样式 - 一行一张布局 */
+.image-container {
+  position: relative;
+  display: block; /* 改为块级元素，确保一行一张 */
+  margin: 0 auto 40px; /* 上右下左边距，增加底部间距 */
+  text-align: center; /* 确保内容居中 */
+  max-width: 90%; /* 控制图片最大宽度 */
+  padding-bottom: 5px; /* 添加底部内边距，为文件名留出空间 */
+  clear: both; /* 确保不会有浮动元素干扰 */
+}
+
+/* 横向图片样式 - 一行一张布局 */
+.landscape-image {
+  max-width: 100%;   /* 确保图片不会溢出容器 */
+  max-height: 80vh;  /* 限制图片最大高度为视口高度的80% */
+  width: auto;       /* 自动调整宽度 */
+  height: auto;      /* 自动调整高度 */
+  display: block;    /* 移除图片底部的额外空间 */
+  margin: 0 auto;    /* 图片居中 */
+  border-radius: 6px; /* 稍微增加圆角 */
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15); /* 增强阴影效果 */
+  object-fit: contain; /* 确保图片完整显示 */
+}
+
+/* 图片悬停效果 - 更柔和的动画 */
+.landscape-image:hover {
+  transform: scale(1.01); /* 减小放大效果 */
+  transition: all 0.3s ease; /* 平滑过渡 */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* 悬停时增强阴影 */
+}
+
+/* 确保图片容器在移动设备上也有合适的边距 */
+@media (max-width: 768px) {
+  .image-container {
+    max-width: 95%; /* 在移动设备上增加宽度 */
+    margin: 0 auto 30px; /* 减小底部边距 */
+  }
+  
+  .landscape-image {
+    max-height: 70vh; /* 在移动设备上减小最大高度 */
+  }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .wjm.subtitle {
+    font-size: 0.8rem; /* 在小屏幕上减小字体大小 */
+  }
+  
+  .image-container {
+    margin-bottom: 30px; /* 在小屏幕上稍微减少底部间距 */
+  }
+}
+
+
+
+
+/* 装饰元素 */
+.decor {
+    position: absolute;
+    z-index: 0;
+    opacity: 0.8;
+    border-radius: 50%;
+}
+
+.decor-1 {
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+    top: -100px;
+    left: -50px;
+}
+
+.decor-2 {
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
+    bottom: -80px;
+    right: -30px;
+}
+
+.decor-3 {
+    width: 110px;
+    height: 110px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    top: 30%;
+    right: 5%;
+}
+
+/* 页面头部样式
+ * 用于展示网站标题和副标题的顶部区域
+ * 1. 使用渐变背景创建柔和过渡效果
+ * 2. 居中对齐内容增强视觉平衡
+ * 3. 设置z-index确保内容在装饰元素之上
+ */
+header {
+    text-align: center;          /* 内容居中对齐 */
+    padding: 50px 20px 30px;     /* 上下左右内边距 */
+    position: relative;          /* 相对定位 */
+    z-index: 1;                  /* 层级设置 */
+    background: linear-gradient(to right, rgba(255, 249, 245, 0.8), rgba(255, 238, 238, 0.8)); /* 横向渐变背景 */
+    border-bottom: 1px solid rgba(255, 155, 179, 0.2); /* 微妙的底部边框 */
+}
+/* 主标题样式
+ * 网站的主要标题，使用中文艺术字体
+ * 1. 使用特色字体增强视觉吸引力
+ * 2. 添加文字阴影提升层次感
+ * 3. 设置相对定位为装饰线条做准备
+ */
+h1 {
+    font-family: 'Ma Shan Zheng', cursive; /* 中文艺术字体 */
+    font-size: 3.8rem;                     /* 大号字体尺寸 */
+    color: var(--primary);                 /* 使用主题色 */
+    margin-bottom: 15px;                   /* 底部间距 */
+    font-weight: normal;                   /* 标准字重 */
+    letter-spacing: 3px;                   /* 字间距 */
+    text-shadow: 0 4px 8px rgba(255, 155, 179, 0.2); /* 柔和文字阴影 */
+    position: relative;                    /* 相对定位 */
+    display: inline-block;                 /* 行内块显示 */
+}
+h1:after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 25%;
+    width: 50%;
+    height: 4px;
+    background: linear-gradient(to right, transparent, var(--primary), transparent);
+    border-radius: 2px;
+}
+.wjm{
+font-family: 'Ma Shan Zheng', cursive;
+    font-size: 1.6rem;
+    color: #ff9bb3;
+   }
+.subtitle {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 1.8rem;
+    color: var(--primary);
+    margin-top: 15px;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 4px rgba(255, 200, 210, 0.8);
+    opacity: 0.8;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 500px;
+    position: relative;
+    z-index: 1;
+}
+
+.image-section {
+    flex: 1;
+    min-width: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 30px 30px;
+    position: relative;
+}
+.image-frame {
+    position: relative;
+    max-width: 100%;
+    max-height: 550px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--box-shadow-medium);
+    transition: var(--transition-normal);
+    border: 5px solid white;
+}
+.featured-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.6s ease;
+    filter: brightness(1.05) contrast(1.05);
+}
+.image-frame:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 155, 179, 0.1), rgba(248, 198, 208, 0.1));
+    z-index: 1;
+    border-radius: 15px;
+    animation: borderGlow 6s infinite alternate;
+}
+@keyframes borderGlow {
+    0% { box-shadow: 0 0 20px rgba(255, 155, 179, 0.3); }
+    100% { box-shadow: 0 0 35px rgba(255, 155, 179, 0.5); }
+}
+.image-frame:hover {
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 0 40px 70px rgba(255, 155, 179, 0.2);
+}
+.image-frame:hover .featured-image {
+    transform: scale(1.05);
+}
+
+.text-section {
+    flex: 1;
+    min-width: 350px;
+    padding: 60px 50px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.message-container {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 0;
+    box-shadow: 0 15px 35px rgba(255, 249, 245, 0.7);
+    border: 1px solid rgba(255, 155, 179, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+.message-container:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent), var(--secondary), var(--primary));
+}
+/* 消息文本样式
+ * 用于展示主要文本内容
+ * 1. 设置合适的边距和间距
+ * 2. 控制文本的大小和行高
+ */
+/* 消息文本样式
+ * 用于展示主要文本内容
+ * 1. 设置统一的左右边距
+ * 2. 控制文本的大小和行高
+ */
+.message {
+    margin-bottom: 35px;
+    margin-left: 12%;        /* 统一左侧边距 */
+    margin-right: 8%;       /* 统一右侧边距 */
+    position: relative;
+    padding-left: 0px;     /* 额外的左侧内边距用于装饰元素 */
+    padding-right: 0px;    /* 添加相同的右侧内边距保持平衡 */
+    font-size: 1.1rem;
+    color: var(--text);
+    line-height: 2;
+    font-weight: 300;
+}
+.message:before {
+    content: ""; 
+/* 标题前文字字体大小默认1.6 */
+    position: absolute;
+    left: 0;
+    top: 0px;
+    color: var(--primary);
+    font-size: 1rem;
+    font-weight: bold;
+}
+.message:last-child {
+    margin-bottom: 0;
+}
+
+.music-player {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-top: 1px solid rgba(255, 155, 179, 0.1);
+    border-bottom: 1px solid rgba(255, 155, 179, 0.1);
+    position: relative;
+    z-index: 1;
+}
+.play-btn {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(255, 155, 179, 0.4);
+    transition: all 0.4s ease;
+    position: relative;
+    border: 3px solid white;
+}
+.play-btn:hover {
+    transform: scale(1.1) translateY(-5px);
+    box-shadow: 0 15px 35px rgba(255, 155, 179, 0.6);
+}
+.play-btn i {
+    color: white;
+    font-size: 36px;
+    margin-left: 2px;
+}
+.play-btn::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid var(--primary);
+    animation: pulse 2.5s infinite;
+    opacity: 0.3;
+}
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+.music-text {
+    margin-left: 25px;
+    color: var(--primary);
+    font-size: 1.2rem;
+    letter-spacing: 1.5px;
+    font-weight: 400;
+    font-family: 'Ma Shan Zheng', cursive;
+    text-shadow: 0 1px 2px rgba(255, 155, 179, 0.3);
+}
+
+footer {
+    text-align: center;
+    padding: 35px 20px;
+    color: var(--primary);
+    font-size: 1.1rem;
+    background: linear-gradient(to right, rgba(255, 249, 245, 0.8), rgba(255, 238, 238, 0.8));
+    border-top: 1px solid rgba(255, 155, 179, 0.2);
+    position: relative;
+    z-index: 1;
+    font-family: 'Ma Shan Zheng', cursive;
+}
+footer p {
+    margin: 5px 0;
+}
+
+/* 响应式布局 */
+@media (max-width: 900px) {
+    /* 布局调整 */
+    .content-wrapper {
+        flex-direction: column;
+    }
+    
+    .image-section, 
+    .text-section {
+        min-width: 100%;
+    }
+    
+    .image-section {
+        padding: 40px 20px 20px;
+    }
+    
+    .text-section {
+        padding: 40px 25px 20px;
+    }
+    
+    /* 字体大小调整 */
+    h1 {
+        font-size: 3rem;
+    }
+    
+    .subtitle {
+        font-size: 1.5rem;
+    }
+    
+    .message {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 600px) {
+    /* 字体大小调整 */
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    .subtitle {
+        font-size: 1.3rem;
+    }
+    
+    .message {
+        font-size: 1.0rem;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    
+    /* 容器调整 */
+    .message-container {
+        padding: 35px 25px;
+    }
+    
+    /* 音乐播放器调整 */
+    .play-btn {
+        width: 120px; 
+        height: 120px;
+    }
+    
+    .play-btn i {
+        font-size: 30px;
+    }
+    
+    .music-text {
+        margin-left: 15px;
+        font-size: 0.8rem;
+    }
+    
+    /* 选项卡调整 */
+    .tab-nav {
+        padding: 0 3% 8px;  /* 减小内边距 */
+        gap: 5px;  /* 减小间距 */
+        font-size: 0.9rem;  /* 调整字体大小 */
+    }
+    
+    .tab-item {
+        padding: 8px 12px;  /* 减小内边距 */
+        margin: 0 3px;  /* 减小外边距 */
+        font-size: 0.9rem;  /* 调整字体大小 */
+    }
+    
+    .tab-content {
+        min-height: 300px;
+    }
+}
+
+@media (max-width: 400px) {
+    /* 选项卡在更小屏幕上的调整 */
+    .tab-nav {
+        padding: 0 2% 6px;
+        gap: 3px;
+        font-size: 0.8rem;
+    }
+    
+    .tab-item {
+        padding: 6px 8px;
+        margin: 0 2px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* 字体大小调整 */
+    h1 {
+        font-size: 2.2rem;
+    }
+    
+    .subtitle {
+        font-size: 1.2rem;
+    }
+    
+    /* 容器调整 */
+    .image-section, 
+    .text-section {
+        padding: 30px 15px 15px;
+    }
+    
+    .message-container {
+        padding: 10px 0px;
+    }
+    
+    /* 音乐播放器调整 */
+    .play-btn {
+        width: 70px; 
+        height: 70px;
+    }
+    
+    .play-btn i {
+        font-size: 26px;
+    }
+}
+
+/* 图片样式 */
+.landscape-image {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    margin-top: 11%;
+    box-shadow: var(--box-shadow-normal);
+    transition: var(--transition-normal);
+}
+
+.landscape-image:hover {
+    transform: scale(1.02);
+}
+
+/* 爱心粒子动画 */
+.hearts-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+}
+.heart {
+    position: absolute;
+    color: var(--primary);
+    font-size: 20px;
+    opacity: 0;
+    animation: floatHeart 6s ease-in-out infinite;
+}
+@keyframes floatHeart {
+    0% {
+        opacity: 0;
+        transform: translateY(100vh) scale(0.5);
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px) scale(1.2);
+    }
+}
+
+:root {
+    --transition-normal: all 0.3s ease;
+    --box-shadow-normal: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 选项卡样式 */
+.tab-nav {
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+    padding: 0 4% 10px;  /* 使用百分比代替固定像素 */
+    margin-bottom: 20px;
+    gap: 10px;
+    border-bottom: 1px solid var(--border-color);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    font-size: calc(0.9rem + 0.3vw);  /* 响应式字体大小 */
+}
+
+.tab-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-item {
+    flex-shrink: 0;
+    padding: calc(8px + 0.5vw) calc(8px + 1vw);  /* 响应式内边距 */
+    margin: 0 calc(3px + 0.5vw);  /* 响应式外边距 */
+    color: var(--primary);
+    font-family: 'Noto Serif SC', serif;
+    text-align: center;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    position: relative;
+}
+
+.tab-item:hover {
+    color: #ff7b9c;
+    font-size: 1.1rem;
+}
+
+.tab-item.active {
+    color: hsl(0deg 66% 46%);
+    border-bottom: 1px solid #ff7b9c;
+    font-size: 1.2rem;
+}
+
+.tab-content {
+    position: relative;
+    min-height: 400px;
+    overflow: hidden;
+}
+
+.tab-pane {
+    width: 100%;
+    transition: opacity 0.3s ease;
+}
+
+/* 通用按钮样式 */
+/* 按钮基础样式
+ * 用于各种交互元素的按钮组件
+ * 1. 使用渐变背景创建现代感
+ * 2. 圆角和阴影增强立体感
+ * 3. 添加过渡效果提升交互体验
+ * 4. 统一的文本样式确保可读性
+ */
+.btn {
+    display: inline-block;       /* 行内块级显示 */
+    padding: 12px 25px;          /* 内部留白 */
+    border-radius: 25px;         /* 圆角效果 */
+    background: linear-gradient(135deg, var(--primary), var(--secondary)); /* 渐变背景 */
+    color: white;                /* 文本颜色 */
+    text-decoration: none;       /* 移除下划线 */
+    font-size: 1rem;             /* 字体大小 */
+    font-weight: 500;            /* 字体粗细 */
+    letter-spacing: 1px;         /* 字间距 */
+    transition: var(--transition-normal); /* 过渡效果 */
+    border: none;                /* 移除边框 */
+    cursor: pointer;             /* 鼠标指针样式 */
+    box-shadow: var(--box-shadow-normal); /* 阴影效果 */
+}
+
+/* 按钮悬停效果
+ * 当用户鼠标悬停在按钮上时的交互反馈
+ * 1. 轻微上浮效果提供触觉反馈
+ * 2. 阴影变化强调可点击状态
+ */
+.btn:hover {
+    transform: translateY(-2px);           /* 向上浮动2像素 */
+    box-shadow: var(--box-shadow-medium);  /* 增强阴影效果 */
+}
+
+/* 卡片样式 */
+/* 卡片组件样式
+ * 用于展示独立内容块的卡片设计
+ * 1. 使用半透明白色背景增加层次感
+ * 2. 圆角和阴影提供精致的视觉效果
+ * 3. 添加过渡动画增强交互体验
+ */
+.card {
+    background: rgba(255, 255, 255, 0.95);  /* 半透明背景 */
+    border-radius: 15px;                     /* 圆角效果 */
+    padding: 25px;                           /* 内部留白 */
+    margin: 15px 0;                          /* 垂直间距 */
+    box-shadow: var(--box-shadow-medium);    /* 中等阴影 */
+    border: 1px solid var(--border-color);   /* 微妙边框 */
+    transition: var(--transition-normal);     /* 平滑过渡效果 */
+}
+
+/* 卡片悬停效果
+ * 当用户鼠标悬停在卡片上时的交互反馈
+ * 1. 轻微上浮效果增强立体感
+ * 2. 增大阴影强调悬停状态
+ */
+.card:hover {
+    transform: translateY(-5px);           /* 向上浮动5像素 */
+    box-shadow: var(--box-shadow-large);   /* 切换为大阴影 */
+}
+
+/* 辅助类 */
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.py-20 {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.px-20 {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* 动画类 */
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.scale-in {
+    animation: scaleIn 0.3s ease-in-out;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+</style>
+<body>
+    <div class="hearts-container" id="heartsContainer"></div>
+    
+    <div class="container">
+        <header>
+            <h1>阚双雪</h1>
+            <br>
+            <div class="subtitle">致我生命中最温暖的光</div>
+        </header>
+        
+                    <div class="music-player">
+                <div class="play-btn" id="playButton">
+                    <i class="fas fa-play"></i>
+                </div>
+                <div class="music-text">让我们赞美愚者</div>
+                <audio id="bgMusic" loop>
+                    <source src="https://rjdsq.github.io/mp3/赞美愚者.mp3" type="audio/mp3">
+                </audio>
+            </div>
+            
+        <div class="content-wrapper">
+            <div class="image-section">
+                <div class="image-frame">
+                    <img src="https://raw.githubusercontent.com/rjdsq/rjdsq.github.io/main/img/yunnan/阚双雪 大理草海.jpg" alt="阚双雪 - 时光礼物主角" class="featured-image">
+                </div>
+            </div>
+            
+
+            
+            <div class="text-section">
+                <div class="message-container" id="tab-app">
+                    <!-- 选项卡导航 -->
+                    <div class="tab-nav">
+                        <div v-for="(tab, index) in tabs" 
+                             :key="index" 
+                             class="tab-item" 
+                             :class="{ active: currentTab === index }"
+                             @click="currentTab = index">
+                            {{ tab.title }}
+                        </div>
+                    </div>
+        
+                    <!-- 选项卡内容 -->
+                    <div class="tab-content">
+                        <div v-show="currentTab === 0" class="tab-pane">
+                            <div class="message" id="text1"></div>
+                        </div>
+
+                    
+                        <div v-show="currentTab === 1" class="tab-pane">
+                        <div class="message" id="text2"></div>
+                        </div>
+            
+                        <div v-show="currentTab === 2" class="tab-pane">
+                            <div class="message" id="text3"></div>
+                        </div>
+            
+                        <div v-show="currentTab === 3" class="tab-pane">
+<div id="message" ></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                new Vue({
+                    el: '#tab-app',
+                    data: {
+                        currentTab: 0,
+                        tabs: [
+                            { title: '随笔' },
+                            { title: '诗词' },
+                            { title: '故事' },
+                            { title: '相册' }
+                        ]
+                    }
+                });
+            </script>
+        </div>
+        
+        <footer>
+             <p>2025.6.8 03 05.30  2001.9.5</p>
+            <p>有些相遇是命中注定</p>
+            <p>有些分离是为了更好的重逢</p>
+            <p>愿时光温柔，许我们再次相拥</p>
+            <p class="t"></p>         
+        </footer>
+    </div>
+       <!-- 外部脚本 -->
+
+
+<script src="https://rjdsq.github.io/file/js/xue.js"></script>
+<script >
+
+// 配置数组：包含所有文本文件的链接和对应的元素ID
+const textConfigs = [
+    { fileUri: 'https://rjdsq.github.io/选项卡1.txt', elementId: 'text1' },
+    { fileUri: 'https://rjdsq.github.io/选项卡2.txt', elementId: 'text2' },
+    { fileUri: 'https://rjdsq.github.io/选项卡3.txt', elementId: 'text3' }
+];
+
+// 处理文本格式，仅将换行符转换为<br>
+function processText(text) {
+    return text
+        // 统一所有换行符为\n
+        .replace(/\r\n|\r|\u2028|\u2029/g, '\n')
+        // 将换行符转换为<br>
+        .replace(/\n/g, '<br>');
+}
+
+// 页面加载完成后执行
+document.addEventListener('DOMContentLoaded', () => {
+    // 处理每个文本配置
+    textConfigs.forEach(({ fileUri, elementId }) => {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        
+        // 在开始加载前显示加载提示
+        element.innerHTML = "正在加载...";
+        
+        fetch(fileUri)
+            .then(response => response.ok ? response.text() : Promise.reject('文件获取失败'))
+            .then(text => { element.innerHTML = processText(text); })
+            .catch(error => { element.innerHTML = `获取文件失败: ${error}`; });
+    });
+});
+
+// 加载GitHub图片
+document.addEventListener('DOMContentLoaded', function() {
+    const message = document.getElementById('message');
+    if (!message) return;
+
+    message.innerHTML = "正在加载图片...";
+
+    fetch('https://api.github.com/repos/rjdsq/rjdsq.github.io/contents/img/yunnan/')
+        .then(response => response.json())
+        .then(data => {
+            message.innerHTML = '';
+            data.forEach(item => {
+                if (item.type === 'file' && /\.(jpg|jpeg|png|gif|svg)$/i.test(item.name)) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'image-container';
+                    
+                    const img = document.createElement('img');
+                    img.src = item.download_url;
+                    img.alt = item.name;
+                    img.loading = 'lazy';
+                    img.className = 'landscape-image';
+                    
+                    const fileName = document.createElement('div');
+                    fileName.className = 'wjm subtitle';
+                    fileName.textContent = item.name.replace(/\.\w+$/, '');
+                    
+                    imgContainer.appendChild(img);
+                    imgContainer.appendChild(fileName);
+                    message.appendChild(imgContainer);
+                }
+            });
+            
+            if (message.children.length === 0) {
+                message.innerHTML = '<p>没有找到图片</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching images:', error);
+            message.innerHTML = '<p>无法加载图片，请稍后再试。</p>';
+        });
+});
+</script>
+</body>
+</html>
