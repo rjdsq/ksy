@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自然雪花飘落</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #1a2a6c, #b21f1f); /* 渐变背景更柔和 */
+            height: 100vh;
+        }
+        
+        .snowflake {
+            position: absolute;
+            color: white;
+            text-shadow: 0 0 3px rgba(255, 255, 255, 0.7); /* 柔和阴影 */
+            opacity: 0.8; /* 半透明更自然 */
+        }
+    </style>
+</head>
+<body>
+ 
+    
+    <script>
+        // 创建更自然的雪花飘落效果
+        function createNaturalSnowflakes() {
+            const snowflakeCount = 80; // 减少数量，避免密集
+            const container = document.body;
+            
+            for (let i = 0; i < snowflakeCount; i++) {
+                setTimeout(() => createSnowflake(container), i * 150); // 错开生成时间
+            }
+            
+            // 循环生成新雪花
+            setInterval(() => createSnowflake(container), 200 + Math.random() * 300);
+        }
+        
+        function createSnowflake(container) {
+            const snowflake = document.createElement('div');
+            snowflake.className = 'snowflake';
+            
+            // 随机雪花符号和大小（更自然的尺寸范围）
+            const size = Math.random() * 8 + 4;
+            snowflake.style.fontSize = size + 'px';
+            const symbols = ['❄️', '❅', '❆', '❇️', '❈'];
+            snowflake.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            
+            // 随机初始位置和动画参数
+            snowflake.style.left = Math.random() * 100 + '%';
+            const fallTime = 8 + Math.random() * 12; // 飘落时间更分散
+            const floatRange = Math.random() * 15 - 7.5; // 左右摆动范围
+            
+            // 关键帧动画（增加飘落中的旋转和摆动）
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes naturalFall${Date.now() + Math.random()} {
+                    0% {
+                        transform: translateY(-10px) rotate(0deg);
+                        opacity: 0;
+                    }
+                    10% {
+                        opacity: 1;
+                    }
+                    50% {
+                        transform: translateY(50vh) rotate(${Math.random() * 360}deg);
+                    }
+                    100% {
+                        transform: translateY(100vh) rotate(${Math.random() * 360}deg);
+                        opacity: 0;
+                    }
+                }
+                
+                @keyframes float${Date.now() + Math.random()} {
+                    0%, 100% {
+                        transform: translateX(0);
+                    }
+                    25%, 75% {
+                        transform: translateX(${floatRange}px);
+                    }
+                    50% {
+                        transform: translateX(${-floatRange}px);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            snowflake.style.animation = `naturalFall${Date.now() + Math.random()} ${fallTime}s ease-in-out infinite, 
+                                        float${Date.now() + Math.random()} ${fallTime * 0.8}s ease-in-out infinite`;
+            container.appendChild(snowflake);
+            
+            // 自然消失后移除
+            setTimeout(() => snowflake.remove(), fallTime * 1000);
+        }
+        
+        window.onload = createNaturalSnowflakes;
+    </script>
+</body>
+</html>
